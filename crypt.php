@@ -296,7 +296,7 @@ class Encryption {
         {
             $this->progressBar->update($keyHashI++);
 
-            return md5($key) . md5(str_reverse($key)) . md5(str_reverse(str_inverse($key))) . md5(str_reverse(str_inverse(str_reverse($key))));
+            return md5($key) . md5(str_reverse($key)) . md5(str_inverse($key)) . md5(str_reverse(str_inverse($key)));
         }, $keyHashes);
 
         $time           = $this->progressBar->end();
