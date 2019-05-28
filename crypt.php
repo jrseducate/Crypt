@@ -425,9 +425,13 @@ class Encryption {
 
         output(($decrypt ? 'Decrypting' : 'Encrypting') . " '$fileName' with key '$key'");
 
-        if(strlen($key) < MAX_WORD_LEN)
+        $keyLength     = strlen($key);
+        $targetLen     = ceil($keyLength / MAX_WORD_LEN) * MAX_WORD_LEN;
+        $remainder     = $targetLen - $keyLength;
+
+        if($remainder !== 0)
         {
-            $key .= str_repeat('*', MAX_WORD_LEN - strlen($key));
+            $key .= str_repeat('*', $remainder);
         }
 
         // ----------------- Key Combination Generation ---------------------
