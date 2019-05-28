@@ -319,14 +319,17 @@ class Encryption {
         $keyHashI       = 0;
         $keyHashLength  = strlen(array_first($keyHashes));
         $totalHashLen   = $keyHashLength * count($keyHashes);
+        $keyHashCount   = count($keyHashes);
 
         $this->progressBar->start(min($totalHashLen, $this->length), 'Interlacing Key Hashes: ');
 
         for($j = 0; $j < $keyHashLength && $keyHashI < $this->length; $j++)
         {
-            for($i = 0; $i < count($keyHashes) && $keyHashI < $this->length; $i++)
+            for($i = 0; $i < $keyHashCount && $keyHashI < $this->length; $i++)
             {
-                $result .= $keyHashes[$i][$j];
+                $index = abs(floor($i / 2) + ($i % 2 === 0 ? 0 : -($keyHashCount - 1)));
+
+                $result .= $keyHashes[$index][$j];
 
                 $this->progressBar->update($keyHashI++);
             }
