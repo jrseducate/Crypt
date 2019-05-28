@@ -64,7 +64,19 @@ function array_first($a)
     return empty($a) || !is_array($a) ? null : $a[array_keys($a)[0]];
 }
 
-const MAX_WORD_LEN   = 10;
+function string_map($callback, $str)
+{
+    $strLen = strlen($str);
+
+    for($i = 0; $i < $strLen; $i++)
+    {
+        $str[$i] = $callback($str[$i]);
+    }
+
+    return $str;
+}
+
+const MAX_WORD_LEN = 10;
 
 class ProgressBar {
 
@@ -296,7 +308,12 @@ class Encryption {
         {
             $this->progressBar->update($keyHashI++);
 
-            return md5($key) . md5(str_reverse($key)) . md5(str_inverse($key)) . md5(str_reverse(str_inverse($key)));
+            $hash = md5($key) . md5(str_reverse($key)) . md5(str_inverse($key)) . md5(str_reverse(str_inverse($key)));
+
+            return implode('', array_map(function($str)
+            {
+                return md5($str);
+            }, str_split($hash, 8)));
         }, $keyHashes);
 
         $time           = $this->progressBar->end();
@@ -407,6 +424,11 @@ class Encryption {
         $this->length  = strlen($file);
 
         output(($decrypt ? 'Decrypting' : 'Encrypting') . " '$fileName' with key '$key'");
+
+        if(strlen($key) < MAX_WORD_LEN)
+        {
+            $key .= str_repeat('*', MAX_WORD_LEN - strlen($key));
+        }
 
         // ----------------- Key Combination Generation ---------------------
 
